@@ -26,20 +26,34 @@ const HabitList: React.FC = () => {
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 2,
-        mt: 4,
-      }}
-    >
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 4 }}>
       {habits.map((habit) => (
-        <Paper key={habit.id} elevation={2} sx={{ p: 2 }}>
+        <Paper
+          key={habit.id}
+          elevation={3}
+          sx={{
+            p: { xs: 2, md: 3 },
+            borderRadius: 4,
+            backgroundColor: "rgba(255, 255, 255, 0.9)", // Frosted glass effect
+            backdropFilter: "blur(12px)",
+            boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+            transition: "0.3s ease",
+            "&:hover": { boxShadow: "0px 6px 24px rgba(0, 0, 0, 0.15)" },
+          }}
+        >
           <Grid container spacing={2} alignItems="center">
-            {/* Left Section: Habit Details */}
-            <Grid item xs={6}>
-              <Typography variant="h6">{habit.name}</Typography>
+            {/* Habit Details */}
+            <Grid item xs={12} sm={6}>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: "bold",
+                  color: "#5A5A5A",
+                  fontSize: { xs: "1rem", md: "1.25rem" },
+                }}
+              >
+                {habit.name}
+              </Typography>
               <Typography
                 variant="body2"
                 color="text.secondary"
@@ -49,27 +63,54 @@ const HabitList: React.FC = () => {
               </Typography>
             </Grid>
 
-            {/* Right Section: Buttons */}
-            <Grid item xs={6}>
-              <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
+            {/* Buttons Section */}
+            <Grid item xs={12} sm={6}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: { xs: "center", sm: "flex-end" },
+                  gap: 1,
+                  flexWrap: "wrap",
+                }}
+              >
                 <Button
-                  variant="outlined"
-                  color={
-                    habit.completedDate.includes(today) ? "success" : "primary"
-                  }
-                  startIcon={<CheckCircle />}
-                  onClick={() => {
-                    dispatch(toggleHabit({ id: habit.id, date: today }));
+                  variant="contained"
+                  sx={{
+                    background: habit.completedDate.includes(today)
+                      ? "linear-gradient(135deg, #00C853, #69F0AE)"
+                      : "linear-gradient(135deg, #3D5AFE, #81D4FA)",
+                    color: "white",
+                    fontWeight: "bold",
+                    borderRadius: 3,
+                    textTransform: "none",
+                    fontSize: { xs: "0.75rem", md: "0.875rem" },
+                    width: { xs: "100%", sm: "auto" }, // Full width on small screens
+                    "&:hover": {
+                      background: habit.completedDate.includes(today)
+                        ? "linear-gradient(135deg, #009624, #00E676)"
+                        : "linear-gradient(135deg, #304FFE, #64B5F6)",
+                    },
                   }}
+                  startIcon={<CheckCircle />}
+                  onClick={() => dispatch(toggleHabit({ id: habit.id, date: today }))}
                 >
-                  {habit.completedDate.includes(today)
-                    ? "Completed"
-                    : "Mark Completed"}
+                  {habit.completedDate.includes(today) ? "Completed" : "Mark Completed"}
                 </Button>
                 <Button
                   onClick={() => dispatch(removeHabit({ id: habit.id }))}
-                  variant="outlined"
-                  color="error"
+                  variant="contained"
+                  sx={{
+                    background: "linear-gradient(135deg, #FF5252, #FF8A80)",
+                    color: "white",
+                    fontWeight: "bold",
+                    borderRadius: 3,
+                    textTransform: "none",
+                    fontSize: { xs: "0.75rem", md: "0.875rem" },
+                    width: { xs: "100%", sm: "auto" }, // Full width on small screens
+                    "&:hover": {
+                      background: "linear-gradient(135deg, #D32F2F, #FF5252)",
+                    },
+                  }}
                   startIcon={<Delete />}
                 >
                   Remove
@@ -77,11 +118,32 @@ const HabitList: React.FC = () => {
               </Box>
             </Grid>
           </Grid>
-          <Box sx={{mt: 2}}>
-            <Typography variant="body2">
-              Current Streak : {getStreak(habit)} days
+
+          {/* Streak Progress Bar */}
+          <Box sx={{ mt: 2 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                fontWeight: "bold",
+                color: "#5A5A5A",
+                fontSize: { xs: "0.8rem", md: "1rem" },
+              }}
+            >
+              Current Streak: {getStreak(habit)} days
             </Typography>
-            <LinearProgress variant="determinate" value={(getStreak(habit) / 30) * 100} sx={{mt: 1}} />
+            <LinearProgress
+              variant="determinate"
+              value={(getStreak(habit) / 30) * 100}
+              sx={{
+                mt: 1,
+                height: { xs: 8, md: 10 },
+                borderRadius: 5,
+                backgroundColor: "#E0E0E0",
+                "& .MuiLinearProgress-bar": {
+                  background: "linear-gradient(90deg, #4CAF50, #81C784)",
+                },
+              }}
+            />
           </Box>
         </Paper>
       ))}
